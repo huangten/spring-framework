@@ -1,11 +1,11 @@
 /*
- * Copyright 2002-2018 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,7 +26,10 @@ import org.springframework.expression.ParseException;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Common superclass for expression tests.
@@ -44,7 +47,7 @@ public abstract class AbstractExpressionTests {
 
 	protected final ExpressionParser parser = new SpelExpressionParser();
 
-	protected final StandardEvaluationContext eContext = TestScenarioCreator.getTestEvaluationContext();
+	protected final StandardEvaluationContext context = TestScenarioCreator.getTestEvaluationContext();
 
 
 	/**
@@ -63,7 +66,7 @@ public abstract class AbstractExpressionTests {
 			SpelUtilities.printAbstractSyntaxTree(System.out, expr);
 		}
 
-		Object value = expr.getValue(eContext);
+		Object value = expr.getValue(context);
 
 		// Check the return value
 		if (value == null) {
@@ -95,7 +98,7 @@ public abstract class AbstractExpressionTests {
 			SpelUtilities.printAbstractSyntaxTree(System.out, expr);
 		}
 
-		Object value = expr.getValue(eContext, expectedResultType);
+		Object value = expr.getValue(context, expectedResultType);
 		if (value == null) {
 			if (expectedValue == null) {
 				return;  // no point doing other checks
@@ -127,7 +130,7 @@ public abstract class AbstractExpressionTests {
 		if (DEBUG) {
 			SpelUtilities.printAbstractSyntaxTree(System.out, expr);
 		}
-		Object value = expr.getValue(eContext);
+		Object value = expr.getValue(context);
 		if (value == null) {
 			if (expectedValue == null) {
 				return;  // no point doing other checks
@@ -145,7 +148,7 @@ public abstract class AbstractExpressionTests {
 		assertTrue("Type of the result was not as expected.  Expected '" + expectedClassOfResult +
 				"' but result was of type '" + resultType + "'", expectedClassOfResult.equals(resultType));
 
-		boolean isWritable = expr.isWritable(eContext);
+		boolean isWritable = expr.isWritable(context);
 		if (isWritable != shouldBeWritable) {
 			if (shouldBeWritable)
 				fail("Expected the expression to be writable but it is not");
@@ -184,10 +187,10 @@ public abstract class AbstractExpressionTests {
 				fail("Parser returned null for expression");
 			}
 			if (expectedReturnType != null) {
-				expr.getValue(eContext, expectedReturnType);
+				expr.getValue(context, expectedReturnType);
 			}
 			else {
-				expr.getValue(eContext);
+				expr.getValue(context);
 			}
 			fail("Should have failed with message " + expectedMessage);
 		}
